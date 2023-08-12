@@ -1,0 +1,18 @@
+{
+  "configurations": [
+    {
+      "type": "node-terminal",
+      "name": "Run Script: start",
+      "request": "launch",
+      "command": "npm run start",
+      "cwd": "${workspaceFolder}"
+    },
+    {
+      "type": "node-terminal",
+      "name": "Run Script: lint-staged",
+      "request": "launch",
+      "command": "npm run lint-staged",
+      "cwd": "${workspaceFolder}"
+    }
+  ]
+}
