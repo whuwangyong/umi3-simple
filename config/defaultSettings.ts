@@ -4,9 +4,12 @@ const Settings: LayoutSettings & {
   pwa?: boolean;
   logo?: string;
 } = {
-  navTheme: 'light',
-  // 拂晓蓝
-  primaryColor: '#1890ff',
+  navTheme: 'dark',
+  // 拂晓蓝 #1890ff
+  // 酱紫 #722ED1
+  // 极客蓝 #2F54EB
+  primaryColor: '#2F54EB', //
+  //
   layout: 'side',
   contentWidth: 'Fluid',
   fixedHeader: false,

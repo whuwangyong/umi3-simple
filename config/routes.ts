@@ -1,6 +1,6 @@
 export default [
   { path: '/', redirect: '/dashboard' },
-  { name: 'dashboard', icon: 'dashboard', path: '/dashboard', component: './Dashboard' },
+  { name: 'Dashboard', icon: 'dashboard', path: '/dashboard', component: './Dashboard' },
 
   {
     path: '/user',
