@@ -1,13 +1,21 @@
 import { random } from 'lodash';
 
-// 千位分隔符格式化大数
-// 匹配每三位数字的位置，然后用逗号分隔
+/**
+ * 千位分隔符格式化大数
+ * 匹配每三位数字的位置，然后用逗号分隔
+ * @param number
+ * @returns
+ */
 export function formatBigNumber(number: number) {
   return number.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',');
 }
 
-// 生成随机日期时间
-// start,end: 起止日期
+/**
+ * 生成随机日期时间
+ * @param start 起止日期
+ * @param end
+ * @returns
+ */
 export function getRandomDateTime(start: string, end: string) {
   const startDate = new Date(start).getTime();
   const endDate = new Date(end).getTime();
@@ -23,7 +31,12 @@ export function getRandomDateTime(start: string, end: string) {
 
   return new Date(randomDateTime);
 }
-// 生成随机长度的字符串
+
+/**
+ * 生成随机长度的字符串
+ * @param length
+ * @returns
+ */
 export function getRandomString(length: number) {
   const charset = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
   let randomString = '';

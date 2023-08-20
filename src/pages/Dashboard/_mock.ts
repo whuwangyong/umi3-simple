@@ -4,7 +4,7 @@ import { Request, Response } from 'express';
 import { BigTopic, ConsumeOffset, JobInstance } from './data.d';
 import { random } from 'lodash';
 import { getRandomString, getRandomDateTime } from '../../utils/MyUtils';
-// mock 里面不能写'@/utils/MyUtils'？
+// mock 里面不能写'@/utils/MyUtils'，要写相对路径
 
 function getKafkaState(req: Request, res: Response) {
   res.send({
@@ -21,7 +21,7 @@ function getBigTopics(req: Request, res: Response) {
   const items: BigTopic[] = [];
   for (let i = 0; i < 10; i++) {
     items.push({
-      index: i + 1,
+      id: i + 1,
       name: 'topic-' + getRandomString(30),
       partitions: random(1, 10),
       totalOffsets: random(1, 10000),
@@ -37,7 +37,7 @@ function getLag(req: Request, res: Response) {
   const items: ConsumeOffset[] = [];
   for (let i = 0; i < 10; i++) {
     items.push({
-      index: i + 1,
+      id: i + 1,
       groupName: 'group-' + getRandomString(20),
       lag: random(1, 1000000),
     });
@@ -50,9 +50,9 @@ function getLag(req: Request, res: Response) {
 
 function getFailedJobs(req: Request, res: Response) {
   const items: JobInstance[] = [];
-  for (let i = 0; i < 20; i++) {
+  for (let i = 0; i < 2000; i++) {
     items.push({
-      index: i + 1,
+      id: i + 1,
       name: 'jobInstance-' + getRandomString(50),
       status: 'FAILED',
       startTime: getRandomDateTime('2023-1-1', '2023-12-31'),

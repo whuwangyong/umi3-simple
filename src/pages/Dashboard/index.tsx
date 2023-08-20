@@ -34,16 +34,16 @@ const Dashboard: React.FC = () => {
   const { data: kafkaState, loading: kafkaStateLoading } = useRequest(() => {
     return getKafkaState();
   });
-  const { data: bigTopics } = useRequest(() => {
+  const { data: bigTopics, loading: bigTopicsLoading } = useRequest(() => {
     return getBigTopics();
   });
-  const { data: lag } = useRequest(() => {
+  const { data: lag, loading: lagLoading } = useRequest(() => {
     return getLag();
   });
-  const { data: failedJobs } = useRequest(() => {
+  const { data: failedJobs, loading: failedJobsLoading } = useRequest(() => {
     return getFailedJob();
   });
-  const { data: idleJobs } = useRequest(() => {
+  const { data: idleJobs, loading: idleJobsLoading } = useRequest(() => {
     return getFailedJob();
   });
 
@@ -130,19 +130,19 @@ const Dashboard: React.FC = () => {
         <Row gutter={12}>
           <Col {...leftTableColResponsiveProps}>
             <MyCard title="大主题 Top-10">
-              <BigTopicTable dataSource={bigTopics} />
+              <BigTopicTable dataSource={bigTopics} loading={bigTopicsLoading} />
             </MyCard>
           </Col>
           <Col {...rightTableColResponsiveProps}>
             <MyCard title="失败的实例">
-              <FailedJobInstanceTable dataSource={failedJobs} />
+              <FailedJobInstanceTable dataSource={failedJobs} loading={failedJobsLoading} />
             </MyCard>
           </Col>
         </Row>
         <Row gutter={12}>
           <Col {...leftTableColResponsiveProps}>
             <MyCard title="消息堆积 Top-10">
-              <ConsumeOffsetTable dataSource={lag} />
+              <ConsumeOffsetTable dataSource={lag} loading={lagLoading} />
             </MyCard>
           </Col>
           <Col {...rightTableColResponsiveProps}>
@@ -152,14 +152,14 @@ const Dashboard: React.FC = () => {
                   闲置(idle)的实例&nbsp;
                   <Tooltip
                     placement="top"
-                    title="状态是RUNNING，但消费进度持续未更新。若lag=0，正常；lag>0，作业卡了"
+                    title="状态是RUNNING，但消费进度持续未更新。原因：1)等结束消息；2)服务调用等返回结果"
                   >
                     <InfoCircleOutlined />
                   </Tooltip>
                 </div>
               }
             >
-              <IdleJobInstanceTable dataSource={idleJobs} />
+              <IdleJobInstanceTable dataSource={idleJobs} loading={idleJobsLoading} />
             </MyCard>
           </Col>
         </Row>
