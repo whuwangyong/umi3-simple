@@ -1,5 +1,7 @@
 import { Request, Response } from 'express';
-import { BigTopic, ConsumeOffset, JobInstance } from '@/services/inspector/typings';
+// mock里面要写import from ... './data.d'，否则报错Cannot find module './data' from 'D:/projects/umi3-simple/src/pages/Dashboard'
+// 其他模块里面写from './data' 就行。antd pro 的demo里面也是如此
+import { BigTopic, ConsumeOffset, JobInstance } from './data.d';
 import { random } from 'lodash';
 import { getRandomString, getRandomDateTime } from '../../utils/MyUtils';
 // mock 里面不能写'@/utils/MyUtils'？

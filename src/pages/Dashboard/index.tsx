@@ -3,12 +3,7 @@ import { GridContent } from '@ant-design/pro-layout';
 import { Tooltip, Col, Row, Space, Badge, Divider } from 'antd';
 import { EllipsisOutlined, InfoCircleOutlined } from '@ant-design/icons';
 
-import {
-  getBigTopics,
-  getFailedJob,
-  getKafkaState,
-  getLag,
-} from '@/services/inspector/dashboard-api';
+import { getBigTopics, getFailedJob, getKafkaState, getLag } from './service';
 import { Link, useRequest } from 'umi';
 import MyCard from './components/MyCard';
 import {

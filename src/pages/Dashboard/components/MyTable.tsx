@@ -3,7 +3,7 @@ import { Table, Tooltip } from 'antd';
 import { InfoCircleOutlined } from '@ant-design/icons';
 import moment from 'moment';
 import { formatBigNumber } from '@/utils/MyUtils';
-import { BigTopic, ConsumeOffset, JobInstance } from '@/services/inspector/typings';
+import { BigTopic, ConsumeOffset, JobInstance } from '../data';
 
 const bigTopicColumns: ColumnsType<BigTopic> = [
   {

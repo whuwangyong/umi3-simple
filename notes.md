@@ -87,7 +87,7 @@ Proper commit message format is required for automated changelog generation. Exa
 └── package.json
 ```
 
-## 页面代码结构推荐
+### 页面代码结构推荐
 
 为了让项目代码组织更加规范，让开发能够更方便的定位到相关页面组件代码，我们定义了一套规范，该规范当前只作为推荐的指导，并非强制。
 
@@ -114,3 +114,8 @@ src
 所有路由组件（会配置在路由配置中的组件）我们推荐以大驼峰命名打平到 pages 下面第一级（复杂的项目可以增加 group 层级，在 group 下放置 pages）。不建议在路由组件内部再嵌套路由组件 - 不方便分辨一个组件是否是路由组件，而且不方便快速从全局定位到路由组件。
 
 我们推荐尽可能的拆分路由组件为更细粒度的组件，对于多个页面可能会用到的组件我们推荐放到 src/components 中，对于只是被单个页面依赖的（区块）组件，我们推荐就近维护到路由组件文件夹下即可。
+
+### 自己的实践
+
+- 全局公用的 api 放在/src/services 下，公用的接口定义在/src/services/typings.d.ts
+- 非公用的，还是就近放在页面组件内。类型定义放在 pages/Xxx/data.d.ts，后端服务放在 pages/Xxx/service.ts。如果所有的类型定义都放在全局的 services/typings.d.ts，该文件长而乱
