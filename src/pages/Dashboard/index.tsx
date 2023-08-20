@@ -1,12 +1,17 @@
 import React from 'react';
 import { GridContent } from '@ant-design/pro-layout';
-import { Tooltip, Card, Col, Row, Statistic, Result, Space, Badge, Divider } from 'antd';
-import { EllipsisOutlined } from '@ant-design/icons';
+import { Tooltip, Col, Row, Space, Badge, Divider } from 'antd';
+import { EllipsisOutlined, InfoCircleOutlined } from '@ant-design/icons';
 
 import { getBigTopics, getFailedJob, getKafkaState, getLag } from './service';
 import { Link, useRequest } from 'umi';
 import MyCard from './components/MyCard';
-import { BigTopicTable, ConsumeOffsetTable, FailedJobInstanceTable } from './components/MyTable';
+import {
+  BigTopicTable,
+  ConsumeOffsetTable,
+  FailedJobInstanceTable,
+  IdleJobInstanceTable,
+} from './components/MyTable';
 
 const leftTableColResponsiveProps = {
   xs: 24,
@@ -36,6 +41,9 @@ const Dashboard: React.FC = () => {
     return getLag();
   });
   const { data: failedJobs } = useRequest(() => {
+    return getFailedJob();
+  });
+  const { data: idleJobs } = useRequest(() => {
     return getFailedJob();
   });
 
@@ -120,9 +128,26 @@ const Dashboard: React.FC = () => {
           </Col>
         </Row>
         <Row gutter={12}>
-          <Col span={24}>
-            <MyCard title="闲置(idle)的实例">
-              <FailedJobInstanceTable dataSource={failedJobs} />
+          <Col {...leftTableColResponsiveProps}>
+            <MyCard title="消息堆积 Top-10">
+              <ConsumeOffsetTable dataSource={lag} />
+            </MyCard>
+          </Col>
+          <Col {...rightTableColResponsiveProps}>
+            <MyCard
+              title={
+                <div>
+                  闲置(idle)的实例&nbsp;
+                  <Tooltip
+                    placement="top"
+                    title="当前未在处理消息的实例。要么已经消费完所有消息，在等结束消息；要么是服务调用，在等下游返回"
+                  >
+                    <InfoCircleOutlined />
+                  </Tooltip>
+                </div>
+              }
+            >
+              <IdleJobInstanceTable dataSource={idleJobs} />
             </MyCard>
           </Col>
         </Row>

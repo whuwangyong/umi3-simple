@@ -14,5 +14,9 @@ export async function getLag(): Promise<InspectorResponse> {
 }
 
 export async function getFailedJob(): Promise<InspectorResponse> {
-  return request('/api/jobs/failed');
+  return request('/api/job/failed');
+}
+
+export async function getIdleJob(): Promise<InspectorResponse> {
+  return request('/api/job/idle');
 }

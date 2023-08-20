@@ -4,6 +4,7 @@ import { InfoCircleOutlined } from '@ant-design/icons';
 import moment from 'moment';
 import { formatBigNumber } from '@/utils/MyUtils';
 
+///////////////////////////////////////////////////// 大主题
 export interface BigTopicDataItem {
   index: number; // React需要的key
   name: string;
@@ -28,6 +29,7 @@ const bigTopicColumns: ColumnsType<BigTopicDataItem> = [
   },
 ];
 
+///////////////////////////////////////////////////// 消费进度
 export interface ConsumeOffsetDataItem {
   index: number;
   groupName: string;
@@ -54,6 +56,7 @@ const consumeOffsetColumns: ColumnsType<ConsumeOffsetDataItem> = [
   },
 ];
 
+///////////////////////////////////////////////////// 作业实例
 export interface JobInstanceDataItem {
   index: number;
   name: string;
@@ -61,6 +64,7 @@ export interface JobInstanceDataItem {
   startTime: Date;
   lastUpdateTime: Date;
   position: number;
+  idleMin: number; // 闲置分钟
 }
 
 const failedJobInstanceColumns: ColumnsType<JobInstanceDataItem> = [
@@ -68,6 +72,11 @@ const failedJobInstanceColumns: ColumnsType<JobInstanceDataItem> = [
     title: '实例名',
     dataIndex: 'name',
     render: (text: React.ReactNode) => <a href="#">{text}</a>,
+  },
+  {
+    title: '消费进度',
+    dataIndex: 'position',
+    render: (text) => formatBigNumber(text),
   },
   {
     title: '启动时间',
@@ -79,16 +88,37 @@ const failedJobInstanceColumns: ColumnsType<JobInstanceDataItem> = [
     dataIndex: 'lastUpdateTime',
     render: (text) => moment(text).format('MM-DD HH:mm:ss'),
   },
+];
+
+const idleJobInstanceColumns: ColumnsType<JobInstanceDataItem> = [
+  {
+    title: '实例名',
+    dataIndex: 'name',
+    render: (text: React.ReactNode) => <a href="#">{text}</a>,
+  },
   {
     title: '消费进度',
     dataIndex: 'position',
+
     render: (text) => formatBigNumber(text),
   },
-];
+  {
+    title: '启动时间',
+    dataIndex: 'startTime',
 
-// export const BigTopicTable = ({ dataSource }: { dataSource: BigTopicDataItem[] }) => {
-//   return <Table columns={bigTopicColumns} dataSource={dataSource} />;
-// };
+    render: (text) => moment(text).format('MM-DD HH:mm:ss'),
+  },
+  {
+    title: '上次更新时间',
+    dataIndex: 'lastUpdateTime',
+
+    render: (text) => moment(text).format('MM-DD HH:mm:ss'),
+  },
+  {
+    title: '闲置分钟',
+    dataIndex: 'idleMin',
+  },
+];
 
 const MyTable = (props: any) => (
   <Table
@@ -112,4 +142,8 @@ export const ConsumeOffsetTable = (props: any) => {
 
 export const FailedJobInstanceTable = (props: any) => {
   return <MyTable {...props} columns={failedJobInstanceColumns} />;
+};
+
+export const IdleJobInstanceTable = (props: any) => {
+  return <MyTable {...props} columns={idleJobInstanceColumns} />;
 };

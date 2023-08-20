@@ -33,7 +33,7 @@ function getBigTopics(req: Request, res: Response) {
 
 function getLag(req: Request, res: Response) {
   const items: ConsumeOffsetDataItem[] = [];
-  for (let i = 0; i < 20; i++) {
+  for (let i = 0; i < 10; i++) {
     items.push({
       index: i + 1,
       groupName: 'group-' + getRandomString(20),
@@ -46,7 +46,7 @@ function getLag(req: Request, res: Response) {
   });
 }
 
-function getFailedJob(req: Request, res: Response) {
+function getFailedJobs(req: Request, res: Response) {
   const items: JobInstanceDataItem[] = [];
   for (let i = 0; i < 20; i++) {
     items.push({
@@ -56,6 +56,7 @@ function getFailedJob(req: Request, res: Response) {
       startTime: getRandomDateTime('2023-1-1', '2023-12-31'),
       lastUpdateTime: getRandomDateTime('2023-1-1', '2023-12-31'),
       position: random(1, 1000000),
+      idleMin: random(1, 300),
     });
   }
   res.send({
@@ -68,5 +69,6 @@ export default {
   'GET /api/kafka/state': getKafkaState,
   'GET /api/kafka/bigTopics': getBigTopics,
   'GET /api/kafka/lag': getLag,
-  'GET /api/jobs/failed': getFailedJob,
+  'GET /api/job/failed': getFailedJobs,
+  'GET /api/job/idle': getFailedJobs,
 };
