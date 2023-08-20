@@ -1,6 +1,20 @@
 export default [
   { path: '/', redirect: '/dashboard' },
-  { name: 'Dashboard', icon: 'dashboard', path: '/dashboard', component: './Dashboard' },
+  { path: '/dashboard', name: 'Dashboard', icon: 'dashboard', component: './Dashboard' },
+  {
+    path: '/kafka',
+    name: 'Kafka',
+    icon: 'crown',
+    routes: [
+      { path: '/kafka/topic', name: '主题', icon: 'smile', component: './kafka/Topic' },
+      {
+        path: '/kafka/consumer-group',
+        name: '消费者组',
+        icon: 'smile',
+        component: './kafka/ConsumerGroup',
+      },
+    ],
+  },
 
   {
     path: '/user',
