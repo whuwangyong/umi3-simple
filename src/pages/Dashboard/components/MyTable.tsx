@@ -93,7 +93,7 @@ const failedJobInstanceColumns: ColumnsType<JobInstanceDataItem> = [
 const MyTable = (props: any) => (
   <Table
     {...props}
-    size="middle" // 紧凑布局
+    size="small" // 紧凑布局 middle small
     pagination={{
       style: { marginBottom: 0 },
       pageSize: 5,

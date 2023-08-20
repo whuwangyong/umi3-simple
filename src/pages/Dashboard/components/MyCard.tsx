@@ -3,7 +3,7 @@ import { Card, CardProps } from 'antd';
 // 样式参考Statistic组件
 const cardTitleStyle = {
   color: 'rgba(0, 0, 0, 0.45)',
-  fontSize: '14px',
+  fontSize: '16px',
 };
 
 const cardBodyStyle = {

@@ -8,12 +8,20 @@ import { Link, useRequest } from 'umi';
 import MyCard from './components/MyCard';
 import { BigTopicTable, ConsumeOffsetTable, FailedJobInstanceTable } from './components/MyTable';
 
-const tableColResponsiveProps = {
+const leftTableColResponsiveProps = {
   xs: 24,
   sm: 24,
   md: 24,
-  lg: 12,
-  xl: 12,
+  lg: 24,
+  xl: 8,
+  style: { marginBottom: 0 },
+};
+const rightTableColResponsiveProps = {
+  xs: 24,
+  sm: 24,
+  md: 24,
+  lg: 24,
+  xl: 16,
   style: { marginBottom: 0 },
 };
 
@@ -100,19 +108,12 @@ const Dashboard: React.FC = () => {
           </Col>
         </Row>
         <Row gutter={12}>
-          <Col {...tableColResponsiveProps}>
+          <Col {...leftTableColResponsiveProps}>
             <MyCard title="大主题 Top-10">
               <BigTopicTable dataSource={bigTopics} />
             </MyCard>
           </Col>
-          <Col {...tableColResponsiveProps}>
-            <MyCard title="消息堆积 Top-10">
-              <ConsumeOffsetTable dataSource={lag} />
-            </MyCard>
-          </Col>
-        </Row>
-        <Row gutter={12}>
-          <Col span={24}>
+          <Col {...rightTableColResponsiveProps}>
             <MyCard title="失败的实例">
               <FailedJobInstanceTable dataSource={failedJobs} />
             </MyCard>
