@@ -1,5 +1,5 @@
 import { request } from 'umi';
-import InspectorResponse from '@/typings';
+import { InspectorResponse } from '@/services/inspector/typings';
 
 export async function getKafkaState(): Promise<InspectorResponse> {
   return request('/api/kafka/state');

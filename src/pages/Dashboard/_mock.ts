@@ -1,5 +1,5 @@
 import { Request, Response } from 'express';
-import { BigTopicDataItem, ConsumeOffsetDataItem, JobInstanceDataItem } from './components/MyTable';
+import { BigTopic, ConsumeOffset, JobInstance } from '@/services/inspector/typings';
 import { random } from 'lodash';
 import { getRandomString, getRandomDateTime } from '../../utils/MyUtils';
 // mock 里面不能写'@/utils/MyUtils'？
@@ -16,7 +16,7 @@ function getKafkaState(req: Request, res: Response) {
 }
 
 function getBigTopics(req: Request, res: Response) {
-  const items: BigTopicDataItem[] = [];
+  const items: BigTopic[] = [];
   for (let i = 0; i < 10; i++) {
     items.push({
       index: i + 1,
@@ -32,7 +32,7 @@ function getBigTopics(req: Request, res: Response) {
 }
 
 function getLag(req: Request, res: Response) {
-  const items: ConsumeOffsetDataItem[] = [];
+  const items: ConsumeOffset[] = [];
   for (let i = 0; i < 10; i++) {
     items.push({
       index: i + 1,
@@ -47,7 +47,7 @@ function getLag(req: Request, res: Response) {
 }
 
 function getFailedJobs(req: Request, res: Response) {
-  const items: JobInstanceDataItem[] = [];
+  const items: JobInstance[] = [];
   for (let i = 0; i < 20; i++) {
     items.push({
       index: i + 1,

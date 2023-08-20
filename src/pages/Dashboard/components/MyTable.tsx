@@ -3,16 +3,9 @@ import { Table, Tooltip } from 'antd';
 import { InfoCircleOutlined } from '@ant-design/icons';
 import moment from 'moment';
 import { formatBigNumber } from '@/utils/MyUtils';
+import { BigTopic, ConsumeOffset, JobInstance } from '@/services/inspector/typings';
 
-///////////////////////////////////////////////////// 大主题
-export interface BigTopicDataItem {
-  index: number; // React需要的key
-  name: string;
-  partitions: number;
-  totalOffsets: number;
-}
-
-const bigTopicColumns: ColumnsType<BigTopicDataItem> = [
+const bigTopicColumns: ColumnsType<BigTopic> = [
   {
     title: '主题名',
     dataIndex: 'name',
@@ -29,14 +22,7 @@ const bigTopicColumns: ColumnsType<BigTopicDataItem> = [
   },
 ];
 
-///////////////////////////////////////////////////// 消费进度
-export interface ConsumeOffsetDataItem {
-  index: number;
-  groupName: string;
-  lag: number;
-}
-
-const consumeOffsetColumns: ColumnsType<ConsumeOffsetDataItem> = [
+const consumeOffsetColumns: ColumnsType<ConsumeOffset> = [
   {
     title: '消费者组名称',
     dataIndex: 'groupName',
@@ -56,18 +42,7 @@ const consumeOffsetColumns: ColumnsType<ConsumeOffsetDataItem> = [
   },
 ];
 
-///////////////////////////////////////////////////// 作业实例
-export interface JobInstanceDataItem {
-  index: number;
-  name: string;
-  status: string;
-  startTime: Date;
-  lastUpdateTime: Date;
-  position: number;
-  idleMin: number; // 闲置分钟
-}
-
-const failedJobInstanceColumns: ColumnsType<JobInstanceDataItem> = [
+const failedJobInstanceColumns: ColumnsType<JobInstance> = [
   {
     title: '实例名',
     dataIndex: 'name',
@@ -90,7 +65,7 @@ const failedJobInstanceColumns: ColumnsType<JobInstanceDataItem> = [
   },
 ];
 
-const idleJobInstanceColumns: ColumnsType<JobInstanceDataItem> = [
+const idleJobInstanceColumns: ColumnsType<JobInstance> = [
   {
     title: '实例名',
     dataIndex: 'name',

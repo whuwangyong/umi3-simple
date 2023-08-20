@@ -3,7 +3,12 @@ import { GridContent } from '@ant-design/pro-layout';
 import { Tooltip, Col, Row, Space, Badge, Divider } from 'antd';
 import { EllipsisOutlined, InfoCircleOutlined } from '@ant-design/icons';
 
-import { getBigTopics, getFailedJob, getKafkaState, getLag } from './service';
+import {
+  getBigTopics,
+  getFailedJob,
+  getKafkaState,
+  getLag,
+} from '@/services/inspector/dashboard-api';
 import { Link, useRequest } from 'umi';
 import MyCard from './components/MyCard';
 import {
@@ -51,7 +56,7 @@ const Dashboard: React.FC = () => {
     <GridContent>
       <>
         <Row gutter={12}>
-          <Col xs={24} sm={24} md={12} lg={12} xl={12}>
+          <Col xs={24} sm={24} md={12} lg={8} xl={8}>
             <MyCard title="Kafka Broker Servers">
               {!kafkaStateLoading && kafkaState && (
                 <Space
@@ -72,7 +77,7 @@ const Dashboard: React.FC = () => {
               )}
             </MyCard>
           </Col>
-          <Col xs={24} sm={12} md={12} lg={6} xl={4}>
+          <Col xs={24} sm={12} md={12} lg={4} xl={4}>
             <MyCard
               title="主题/分区"
               extra={
@@ -86,7 +91,7 @@ const Dashboard: React.FC = () => {
               1630/5600
             </MyCard>
           </Col>
-          <Col xs={24} sm={12} md={12} lg={6} xl={4}>
+          <Col xs={24} sm={12} md={12} lg={4} xl={4}>
             <MyCard
               title="消费者组"
               extra={
@@ -100,7 +105,19 @@ const Dashboard: React.FC = () => {
               4816
             </MyCard>
           </Col>
-          <Col xs={24} sm={12} md={12} lg={6} xl={4}>
+          <Col xs={24} sm={12} md={12} lg={4} xl={4}>
+            <MyCard
+              title="应用"
+              extra={
+                <Tooltip placement="bottom" title="from zookeeper">
+                  <InfoCircleOutlined />
+                </Tooltip>
+              }
+            >
+              450
+            </MyCard>
+          </Col>
+          <Col xs={24} sm={12} md={12} lg={4} xl={4}>
             <MyCard
               title="作业/实例"
               extra={
@@ -140,7 +157,7 @@ const Dashboard: React.FC = () => {
                   闲置(idle)的实例&nbsp;
                   <Tooltip
                     placement="top"
-                    title="当前未在处理消息的实例。要么已经消费完所有消息，在等结束消息；要么是服务调用，在等下游返回"
+                    title="状态是RUNNING，但消费进度持续未更新。若lag=0，正常；lag>0，作业卡了"
                   >
                     <InfoCircleOutlined />
                   </Tooltip>
