@@ -8,9 +8,9 @@ function getKafkaState(req: Request, res: Response) {
   res.send({
     success: true,
     data: [
-      { server: 'Kafka_1:9092', state: 'online' },
-      { server: 'Kafka_2:9092', state: 'online' },
-      { server: 'Kafka_3:9092', state: 'offline' },
+      { id: 1, server: 'Kafka_1:9092', state: 'online' },
+      { id: 2, server: 'Kafka_2:9092', state: 'online' },
+      { id: 3, server: 'Kafka_3:9092', state: 'offline' },
     ],
   });
 }
@@ -50,6 +50,7 @@ function getFailedJob(req: Request, res: Response) {
   const items: JobInstanceDataItem[] = [];
   for (let i = 0; i < 20; i++) {
     items.push({
+      index: i + 1,
       name: 'jobInstance-' + getRandomString(50),
       status: 'FAILED',
       startTime: getRandomDateTime('2023-1-1', '2023-12-31'),

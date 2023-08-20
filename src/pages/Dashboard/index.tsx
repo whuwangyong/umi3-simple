@@ -45,8 +45,9 @@ const Dashboard: React.FC = () => {
                   size={'middle'}
                   wrap //自动换行
                 >
-                  {kafkaState.map((item) => (
+                  {kafkaState.map((item: { id: number; server: string; state: string }) => (
                     <Badge
+                      key={item.id}
                       status={item.state === 'online' ? 'processing' : 'error'}
                       text={item.server}
                     />

@@ -5,18 +5,13 @@ import moment from 'moment';
 import { formatBigNumber } from '@/utils/MyUtils';
 
 export interface BigTopicDataItem {
-  index: number;
+  index: number; // React需要的key
   name: string;
   partitions: number;
   totalOffsets: number;
 }
 
 const bigTopicColumns: ColumnsType<BigTopicDataItem> = [
-  {
-    title: '排名',
-    dataIndex: 'index', // 列数据在数据项中对应的路径，支持通过数组查询嵌套路径
-    //key:'index,'// React 需要的 key，如果已经设置了唯一的 dataIndex，可以忽略这个属性
-  },
   {
     title: '主题名',
     dataIndex: 'name',
@@ -41,10 +36,6 @@ export interface ConsumeOffsetDataItem {
 
 const consumeOffsetColumns: ColumnsType<ConsumeOffsetDataItem> = [
   {
-    title: '排名',
-    dataIndex: 'index',
-  },
-  {
     title: '消费者组名称',
     dataIndex: 'groupName',
     render: (text: React.ReactNode) => <a href="#">{text}</a>,
@@ -64,6 +55,7 @@ const consumeOffsetColumns: ColumnsType<ConsumeOffsetDataItem> = [
 ];
 
 export interface JobInstanceDataItem {
+  index: number;
   name: string;
   status: string;
   startTime: Date;
@@ -106,6 +98,7 @@ const MyTable = (props: any) => (
       style: { marginBottom: 0 },
       pageSize: 5,
     }}
+    rowKey={(record, index) => index} // React需要的key
   />
 );
 
