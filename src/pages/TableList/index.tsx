@@ -155,6 +155,7 @@ const TableList: React.FC = () => {
           status: 'Error',
         },
       },
+      filters: true,
     },
     {
       title: '上次调度时间',
