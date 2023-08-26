@@ -2,21 +2,21 @@ import { request } from 'umi';
 import { InspectorResponse } from '@/services/inspector/typings';
 
 export async function getKafkaState(): Promise<InspectorResponse> {
-  return request('/api/kafka/state');
+  return request('/api/dashboard/kafka-state');
 }
 
 export async function getBigTopics(): Promise<InspectorResponse> {
-  return request('/api/kafka/bigTopics');
+  return request('/api/dashboard/big-topics');
 }
 
 export async function getLag(): Promise<InspectorResponse> {
-  return request('/api/kafka/lag');
+  return request('/api/dashboard/lag');
 }
 
 export async function getFailedJob(): Promise<InspectorResponse> {
-  return request('/api/job/failed');
+  return request('/api/dashboard/failed-jobs');
 }
 
 export async function getIdleJob(): Promise<InspectorResponse> {
-  return request('/api/job/idle');
+  return request('/api/dashboard/idle-jobs');
 }

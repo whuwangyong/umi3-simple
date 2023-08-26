@@ -3,29 +3,32 @@ import { Table, Tooltip } from 'antd';
 import { InfoCircleOutlined } from '@ant-design/icons';
 import moment from 'moment';
 import { formatBigNumber } from '@/utils/MyUtils';
-import { BigTopic, ConsumeOffset, JobInstance } from '../data';
+import { Partition, Topic, ConsumerGroup } from '@/pages/kafka/data';
+import { JobInstance } from '@/pages/Job/data';
+import { Link } from 'umi';
 
-const bigTopicColumns: ColumnsType<BigTopic> = [
+const bigTopicColumns: ColumnsType<Topic> = [
   {
     title: '主题名',
     dataIndex: 'name',
-    render: (text: React.ReactNode) => <a href="/">{text}</a>,
+    render: (text: React.ReactNode) => <Link to={`/kafka/topic?name=${text}`}>{text}</Link>,
   },
   {
     title: '分区数',
     dataIndex: 'partitions',
+    render: (partitions: Partition[]) => partitions.length,
   },
   {
     title: '总偏移量',
-    dataIndex: 'totalOffsets',
+    dataIndex: 'totalOffset',
     render: (text) => formatBigNumber(text),
   },
 ];
 
-const consumeOffsetColumns: ColumnsType<ConsumeOffset> = [
+const consumeOffsetColumns: ColumnsType<ConsumerGroup> = [
   {
     title: '消费者组名称',
-    dataIndex: 'groupName',
+    dataIndex: 'name',
     render: (text: React.ReactNode) => <a href="#">{text}</a>,
   },
   {
@@ -98,12 +101,13 @@ const idleJobInstanceColumns: ColumnsType<JobInstance> = [
 const MyTable = (props: any) => (
   <Table
     {...props}
-    size="small" // 紧凑布局 middle small
+    size="middle" // 紧凑布局 middle small
     pagination={{
       style: { marginBottom: 0 },
       pageSize: 5,
     }}
-    rowKey={(record, index) => index} // React需要的key
+    // rowKey={(record, index) => index} // React需要的key
+    rowKey={(record) => record.name} // React需要的key
   />
 );
 
