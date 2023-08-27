@@ -31,7 +31,8 @@ import {
 import { PlusOutlined, UploadOutlined, DeleteOutlined } from '@ant-design/icons';
 import { Topic, Partition, TopicTablePagination, NewTopic } from '../data';
 import { getTopics } from './service';
-import JsonViewer from '@/components/JsonViewer';
+import PocContent from './components/PocContent';
+import IndexContent from './components/IndexContent';
 
 const handleAdd = async (fields: NewTopic) => {
   console.log('add topic:', fields.name);
@@ -94,79 +95,6 @@ const columns: ProColumns<Topic>[] = [
   },
 ];
 
-const PocContent: React.FC<{ topic: string | undefined; partitions: number }> = ({
-  topic,
-  partitions,
-}) => {
-  const jsonObj = [
-    { name: 'wang', age: 30 },
-    {
-      name: 'wss',
-      age: 34,
-      phone: {
-        work: '0755-21991234',
-        lift: '17612345678',
-      },
-    },
-  ];
-
-  const partitionValueEnum = new Map<number, string>();
-  for (let p = 0; p < partitions; p++) {
-    partitionValueEnum.set(p, '分区' + p);
-  }
-  partitionValueEnum.set(-1, '所有分区');
-  if (topic) {
-    return (
-      <Card bordered={false} bodyStyle={{}}>
-        <ProForm
-          layout="inline"
-          // 修改提交按钮和重置按钮的顺序
-          submitter={{ render: (props, dom) => [...dom] }}
-        >
-          <ProFormSelect
-            name="partition"
-            label="分区"
-            fieldProps={{
-              style: {
-                width: 100,
-              },
-              defaultValue: 0,
-            }}
-            valueEnum={partitionValueEnum}
-          />
-          <ProFormDigit
-            name="offset"
-            label="偏移量"
-            fieldProps={{
-              style: {
-                width: 120,
-              },
-              defaultValue: 0,
-            }}
-          />
-          <ProFormDigit
-            name="count"
-            label="数量"
-            fieldProps={{
-              style: {
-                width: 120,
-              },
-              defaultValue: 1,
-            }}
-          />
-        </ProForm>
-
-        <JsonViewer title="查询结果" jsonObj={jsonObj} maxHeight="1080px" />
-      </Card>
-    );
-  } else {
-    return <></>;
-  }
-};
-function indexContent(): React.ReactNode {
-  return <Card title="aaa">aaa</Card>;
-}
-
 const App: React.FC = () => {
   const actionRef = useRef<ActionType>();
   // 左边栏
@@ -187,7 +115,7 @@ const App: React.FC = () => {
               labelWidth: 80,
             }}
             request={getTopics}
-            pagination={{ defaultPageSize: 10, pageSizeOptions: [10, 20, 50, 100] }}
+            pagination={{ defaultPageSize: 20, pageSizeOptions: [10, 20, 50, 100] }}
             options={{
               density: false,
               setting: {
@@ -316,21 +244,25 @@ const App: React.FC = () => {
             tabs={{
               type: 'line',
               tabBarStyle: { paddingLeft: 8 },
+              items: [
+                {
+                  key: 'poc',
+                  label: <Tooltip title="Partition, Offset, Count">POC三元组查询</Tooltip>,
+                  children: (
+                    <PocContent
+                      topic={currentRow?.name}
+                      partitions={currentRow?.partitions.length || 1}
+                    />
+                  ),
+                },
+                {
+                  key: 'index',
+                  label: '索引查询',
+                  children: <IndexContent />,
+                },
+              ],
             }}
-          >
-            <ProCard.TabPane
-              key="poc"
-              tab={<Tooltip title="Partition, Offset, Count">POC三元组查询</Tooltip>}
-            >
-              <PocContent
-                topic={currentRow?.name}
-                partitions={currentRow?.partitions.length || 1}
-              />
-            </ProCard.TabPane>
-            <ProCard.TabPane key="index" tab="索引查询">
-              内容二
-            </ProCard.TabPane>
-          </ProCard>
+          />
         </Col>
       </Row>
     </GridContent>

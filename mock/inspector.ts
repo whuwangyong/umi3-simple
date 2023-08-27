@@ -77,6 +77,38 @@ function getTopics(req: Request, res: Response, u: string) {
   });
 }
 
+function pocQuery(req: Request, res: Response) {
+  const topic = req.query['topic'];
+  const partition = req.query['partition'];
+  const offset = req.query['offset'];
+  const count = req.query['count'] ?? 0;
+
+  const jsonObj = [
+    {
+      // k v 名字一样，可以简写，只写k不写v
+      topic,
+      partition,
+      offset,
+      count,
+      msgList: [
+        { k1: '001', k2: 100, ok: true },
+        { k1: '002', k2: 200, ok: false },
+      ],
+    },
+  ];
+
+  for (let i = 0; i < random(5, 50); i++) {
+    jsonObj.push(jsonObj[0]);
+  }
+
+  res.send({
+    success: true,
+    data: jsonObj,
+  });
+}
+
+function indexQuery(req: Request, res: Response) {}
+
 //////////////////////////////////////////////////////// Job
 function genJobInstances(num: number): JobInstance[] {
   const items: JobInstance[] = [];
@@ -117,4 +149,7 @@ export default {
   'GET /api/dashboard/idle-jobs': getJobInstances,
 
   'GET /api/kafka/topics': getTopics,
+
+  'GET /api/kafka/msg-query/poc': pocQuery,
+  'GET /api/kafka/msg-query/index': indexQuery,
 };

@@ -1,6 +1,7 @@
 import { request } from 'umi';
 import { Topic } from '../data';
 import type { ColumnFilterItem, ColumnType, CompareFn, SortOrder } from 'antd/lib/table/interface';
+import { InspectorResponse } from '@/services/inspector/typings';
 
 export async function getTopics(
   params: { current?: number; pageSize?: number },
@@ -23,3 +24,16 @@ export async function getTopics(
 }
 
 export async function getIndexDetail(params: any) {}
+
+export async function pocQuery(params: {
+  topic: string;
+  partition: number;
+  offset: number;
+  count: number;
+}): Promise<InspectorResponse> {
+  console.log(params);
+  return request('/api/kafka/msg-query/poc', {
+    method: 'GET',
+    params: { ...params },
+  });
+}

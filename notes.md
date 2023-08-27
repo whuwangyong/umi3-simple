@@ -111,17 +111,17 @@ ComposedFuture
 
 ### 交互接口
 
-[网络请求 - Ant Design Pro (gitee.io)](https://ant-design-pro.gitee.io/zh-CN/docs/request/#参考后端接口规范建议)
+通用接口 [网络请求 - Ant Design Pro (gitee.io)](https://ant-design-pro.gitee.io/zh-CN/docs/request/#参考后端接口规范建议)
 
-```
+```json
 {
-"success": true,
-"data": {},
-"errorMessage": "error message"
+  "success": true,
+  "data": {},
+  "errorMessage": "error message"
 }
 ```
 
-[与网络请求库配置使用 - ProComponents (ant.design)](https://procomponents.ant.design/components#与网络请求库配置使用)
+ProTable ProList 等定义的接口 [与网络请求库配置使用 - ProComponents (ant.design)](https://procomponents.ant.design/components#与网络请求库配置使用)
 
 ProTable，ProList 使用了新的数据结构，如果你使用了我们约定的参数使用起来会非常简单。
 
