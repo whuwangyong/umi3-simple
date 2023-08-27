@@ -6,7 +6,15 @@ import { Divider, InputNumber, Space, Typography } from 'antd';
 import { useState } from 'react';
 import ReactJson from 'react-json-view';
 
-const JsonViewer = ({ title = '执行结果', jsonObj }: { title?: string; jsonObj: Object }) => {
+const JsonViewer = ({
+  title = '执行结果',
+  jsonObj,
+  maxHeight = '500px',
+}: {
+  title?: string;
+  jsonObj: Object;
+  maxHeight?: string;
+}) => {
   const [collapse, setCollapse] = useState<number>(2);
 
   return (
@@ -17,7 +25,7 @@ const JsonViewer = ({ title = '执行结果', jsonObj }: { title?: string; jsonO
           {title}
           <Divider type="vertical" />
           <InputNumber
-            addonBefore="展开级别"
+            addonBefore="展开层级"
             min={0}
             defaultValue={2}
             controls={true}
@@ -29,7 +37,7 @@ const JsonViewer = ({ title = '执行结果', jsonObj }: { title?: string; jsonO
         </Space>
       </Divider>
       <ReactJson
-        style={{ lineHeight: 1.0, fontFamily: 'Consolas' }}
+        style={{ lineHeight: 1.0, fontFamily: 'Consolas', maxHeight: maxHeight, overflowY: 'auto' }}
         src={jsonObj}
         theme="monokai"
         iconStyle="square"

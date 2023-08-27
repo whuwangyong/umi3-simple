@@ -155,7 +155,8 @@ const PocContent: React.FC<{ topic: string | undefined; partitions: number }> = 
             }}
           />
         </ProForm>
-        <JsonViewer jsonObj={jsonObj} />
+
+        <JsonViewer title="查询结果" jsonObj={jsonObj} maxHeight="1080px" />
       </Card>
     );
   } else {
