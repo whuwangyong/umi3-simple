@@ -8,6 +8,7 @@ import {
   Pagination,
   Table,
   Button,
+  Modal,
   Drawer,
   message,
   Space,
@@ -30,21 +31,24 @@ import {
 } from '@ant-design/pro-components';
 import { PlusOutlined, UploadOutlined, DeleteOutlined } from '@ant-design/icons';
 import { Topic, Partition, TopicTablePagination, NewTopic } from '../data';
-import { getTopics } from './service';
+import { createIndex, createTopic, deleteTopic, getTopics } from './service';
 import PocContent from './components/PocContent';
 import IndexContent from './components/IndexContent';
 
 const handleAdd = async (fields: NewTopic) => {
-  console.log('add topic:', fields.name);
-  const hide = message.loading('正在添加');
-
+  const hide = message.loading('正在创建');
   try {
     hide();
-    message.success('添加成功');
+    const result = await createTopic(fields);
+    if (result.success) {
+      message.success('创建成功');
+    } else {
+      message.error(result.errorMessage);
+    }
     return true;
   } catch (error) {
     hide();
-    message.error('添加失败请重试！');
+    message.error('创建失败请重试！' + error);
     return false;
   }
 };
@@ -98,9 +102,12 @@ const columns: ProColumns<Topic>[] = [
 const App: React.FC = () => {
   const actionRef = useRef<ActionType>();
   // 左边栏
-  const [createTopicModalVisible, handleModalVisible] = useState<boolean>(false);
+  const [createTopicModalVisible, setCreateTopicModalVisible] = useState<boolean>(false);
+  const [deleteAllTopicModalVisible, setDeleteAllTopicModalVisible] = useState<boolean>(false);
+  const [deleteTopicModalVisible, setDeleteTopicModalVisible] = useState<boolean>(false);
   const [currentRow, setCurrentRow] = useState<Topic>();
-  const [selectedRowsState, setSelectedRows] = useState<Topic[]>([]);
+  const [selectedRows, setSelectedRows] = useState<Topic[]>([]);
+  const createTopicModalInitialValues = { partitions: 1, replicas: 1 };
 
   // 右边栏
 
@@ -115,7 +122,7 @@ const App: React.FC = () => {
               labelWidth: 80,
             }}
             request={getTopics}
-            pagination={{ defaultPageSize: 20, pageSizeOptions: [10, 20, 50, 100] }}
+            pagination={{ defaultPageSize: 10, pageSizeOptions: [10, 20, 50, 100] }}
             options={{
               density: false,
               setting: {
@@ -130,7 +137,7 @@ const App: React.FC = () => {
                   type="text"
                   icon={<PlusOutlined />}
                   onClick={() => {
-                    handleModalVisible(true);
+                    setCreateTopicModalVisible(true);
                   }}
                 />
               </Tooltip>,
@@ -139,20 +146,26 @@ const App: React.FC = () => {
                   type="text"
                   icon={<UploadOutlined />}
                   onClick={() => {
-                    console.log('current selected:', selectedRowsState);
+                    console.log('current selected:', selectedRows);
                   }}
+                  disabled={true}
                 />
               </Tooltip>,
               <Tooltip placement="top" title="删除所有">
-                <Button type="text" danger={true} icon={<DeleteOutlined />} onClick={() => {}} />
+                <Button
+                  type="text"
+                  danger={true}
+                  icon={<DeleteOutlined />}
+                  onClick={() => setDeleteAllTopicModalVisible(true)}
+                />
               </Tooltip>,
             ]}
             rowSelection={{
-              onChange: (_, selectedRows) => {
-                setSelectedRows(selectedRows);
+              onChange: (_, rows) => {
+                setSelectedRows(rows);
               },
             }}
-            tableAlertOptionRender={({ onCleanSelected }) => (
+            tableAlertOptionRender={({ onCleanSelected, selectedRowKeys }) => (
               <Space size={'small'}>
                 <Button
                   onClick={() => {
@@ -163,13 +176,22 @@ const App: React.FC = () => {
                 </Button>
                 <Button
                   type="primary"
-                  onClick={() => {
-                    onCleanSelected();
+                  onClick={async () => {
+                    if (selectedRowKeys.length > 0) {
+                      const res = await createIndex(selectedRowKeys as string[]);
+                      if (res.success) {
+                        message.success('任务已提交');
+                        if (actionRef.current) {
+                          actionRef.current.reload();
+                        }
+                      }
+                    }
                   }}
                 >
                   创建索引
                 </Button>
                 <Button
+                  disabled={true}
                   danger={true}
                   onClick={() => {
                     onCleanSelected();
@@ -180,7 +202,11 @@ const App: React.FC = () => {
                 <Button
                   danger={true}
                   onClick={() => {
-                    onCleanSelected();
+                    if (selectedRowKeys.length > 0) {
+                      setDeleteTopicModalVisible(true);
+                    } else {
+                      message.warning('未选中主题');
+                    }
                   }}
                 >
                   删除主题
@@ -194,17 +220,59 @@ const App: React.FC = () => {
                 }, // 点击行，行首的多选框是不算的哦，符合逻辑，antd真叼
               };
             }}
+            actionRef={actionRef}
           />
+          <Modal
+            title="删除全部主题"
+            open={deleteAllTopicModalVisible}
+            onOk={async () => {
+              await deleteTopic();
+              setDeleteAllTopicModalVisible(false);
+              if (actionRef.current) {
+                actionRef.current.reload();
+              }
+            }}
+            onCancel={() => {
+              setDeleteAllTopicModalVisible(false);
+            }}
+            okButtonProps={{ danger: true }}
+          >
+            <p>你确定？这是全部主题哦</p>
+            <p>你确定？这是全部主题哦</p>
+            <p>你确定？这是全部主题哦</p>
+          </Modal>
+
+          <Modal
+            title="删除选中的主题"
+            open={deleteTopicModalVisible}
+            onOk={async () => {
+              const topicNames: string[] = selectedRows.map((row) => row.name);
+              await deleteTopic(topicNames);
+              setDeleteTopicModalVisible(false);
+              setSelectedRows([]);
+              if (actionRef.current) {
+                actionRef.current.reload();
+                actionRef.current.clearSelected?.();
+              }
+            }}
+            onCancel={() => {
+              setDeleteTopicModalVisible(false);
+            }}
+            okButtonProps={{ danger: true }}
+          >
+            <p>你确定？</p>
+          </Modal>
 
           <ModalForm
             title="新建主题"
             width="400px"
+            initialValues={createTopicModalInitialValues}
             visible={createTopicModalVisible}
-            onVisibleChange={handleModalVisible}
+            onVisibleChange={setCreateTopicModalVisible}
             onFinish={async (value) => {
               const success = await handleAdd(value as NewTopic);
               if (success) {
-                handleModalVisible(false);
+                setCreateTopicModalVisible(false);
                 if (actionRef.current) {
                   actionRef.current.reload();
                 }
@@ -258,7 +326,7 @@ const App: React.FC = () => {
                 {
                   key: 'index',
                   label: '索引查询',
-                  children: <IndexContent />,
+                  children: <IndexContent topic={currentRow?.name} indices={currentRow?.indices} />,
                 },
               ],
             }}

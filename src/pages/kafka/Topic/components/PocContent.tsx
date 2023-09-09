@@ -78,7 +78,11 @@ const PocContent: React.FC<{ topic: string | undefined; partitions: number }> = 
       </Card>
     );
   } else {
-    return <></>;
+    return (
+      <Card bordered={false} bodyStyle={{}}>
+        点击左边的topic来查询消息
+      </Card>
+    );
   }
 };
 

@@ -3,6 +3,6 @@
  */
 export interface InspectorResponse {
   success: boolean;
-  data: any;
-  errorMessage: string;
+  data?: any;
+  errorMessage?: string;
 }

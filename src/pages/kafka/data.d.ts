@@ -18,6 +18,8 @@ export interface Topic {
   partitions: Partition[];
   totalOffset: number;
   indexStatus?: string;
+  indices?: string[];
+  updateTime: Date;
 }
 
 /**
@@ -29,7 +31,7 @@ export interface NewTopic {
   replicas: number;
 }
 
-export enum indexStatus {
+export enum IndexStatus {
   none,
   ok,
   error,
@@ -41,8 +43,9 @@ export enum indexStatus {
 export interface ConsumerGroup {
   name: string;
   topicPartition: string;
-  offset: number; // 消费进度
+  offset: number;
   lag: number;
+  updateTime: Date;
 }
 
 export interface TopicTablePagination {
@@ -54,7 +57,7 @@ export interface TopicTablePagination {
 /**
  * 索引详情
  */
-export interface indexDetail {
+export interface IndexDetail {
   topic: string;
   status: string;
   bizMsgTotal: number;

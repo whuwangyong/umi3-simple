@@ -1,6 +1,6 @@
 import { request } from 'umi';
-import { Topic } from '../data';
-import type { ColumnFilterItem, ColumnType, CompareFn, SortOrder } from 'antd/lib/table/interface';
+import { NewTopic, Topic } from '../data';
+import type { SortOrder } from 'antd/lib/table/interface';
 import { InspectorResponse } from '@/services/inspector/typings';
 
 export async function getTopics(
@@ -23,6 +23,20 @@ export async function getTopics(
   });
 }
 
+export async function createTopic(topics: NewTopic) {
+  return request<InspectorResponse>('/api/kafka/topics', {
+    method: 'POST',
+    data: topics,
+  });
+}
+
+export async function deleteTopic(topics?: string[]) {
+  return request<InspectorResponse>('/api/kafka/topics', {
+    method: 'DELETE',
+    data: topics,
+  });
+}
+
 export async function getIndexDetail(params: any) {}
 
 export async function pocQuery(params: {
@@ -35,5 +49,23 @@ export async function pocQuery(params: {
   return request('/api/kafka/msg-query/poc', {
     method: 'GET',
     params: { ...params },
+  });
+}
+
+export async function indexQuery(params: {
+  indexName: string;
+  indexValue: string;
+}): Promise<InspectorResponse> {
+  console.log(params);
+  return request('/api/kafka/msg-query/index', {
+    method: 'GET',
+    params: { ...params },
+  });
+}
+
+export async function createIndex(topics: string[]) {
+  return request<InspectorResponse>('/api/kafka/indices', {
+    method: 'POST',
+    data: topics,
   });
 }

@@ -1,7 +1,7 @@
 import { Request, Response } from 'express';
 // mock里面要写import from ... './data.d'，否则报错Cannot find module './data' from 'D:/projects/umi3-simple/src/pages/Dashboard'
 // 其他模块里面写from './data' 就行。antd pro 的demo里面也是如此
-import { Topic, indexStatus, ConsumerGroup } from '../src/pages/kafka/data.d';
+import { Topic, IndexStatus, ConsumerGroup } from '../src/pages/kafka/data.d';
 import { JobInstance, JobStatus } from '../src/pages/Job/data.d';
 import { random } from 'lodash';
 import { getRandomString, getRandomDateTime } from '../src/utils/MyUtils';
@@ -20,22 +20,6 @@ function getKafkaState(req: Request, res: Response) {
   });
 }
 
-function getLag(req: Request, res: Response) {
-  const items: ConsumerGroup[] = [];
-  for (let i = 0; i < 10; i++) {
-    items.push({
-      name: 'group-' + getRandomString(20),
-      topicPartition: 'topicPartition-' + random(0, 10),
-      offset: random(1, 1000),
-      lag: random(1, 1000000),
-    });
-  }
-  res.send({
-    success: true,
-    data: items,
-  });
-}
-
 //////////////////////////////////////////////////////// kafka/Topic
 
 function genTopics(num: number): Topic[] {
@@ -48,7 +32,9 @@ function genTopics(num: number): Topic[] {
         { name: 'topicPartition-1', offset: 20 },
       ],
       totalOffset: random(1, 10000),
-      indexStatus: indexStatus[random(0, 2)],
+      indexStatus: IndexStatus[random(0, 2)],
+      indices: ['fundAccount', 'bizNo'],
+      updateTime: new Date(),
     });
   }
   return items;
@@ -68,12 +54,41 @@ function getTopics(req: Request, res: Response, u: string) {
   let items = topics.slice();
 
   if (params.name) {
-    items = items.filter((data) => data?.name?.includes(params.name || ''));
+    items = items.filter((data) =>
+      data?.name?.toLocaleLowerCase().includes(params.name.toLocaleLowerCase() || ''),
+    );
   }
 
   res.send({
     success: true,
     data: items,
+  });
+}
+
+function createTopic(req: Request, res: Response) {
+  topics.push(req.body);
+  res.send({
+    success: true,
+  });
+}
+
+function deleteTopic(req: Request, res: Response) {
+  const a: Topic[] = [];
+
+  const toDelete = req.body as string[];
+  if (toDelete.length > 0) {
+    topics.forEach((t) => {
+      if (!toDelete.includes(t.name)) {
+        a.push(t);
+      }
+    });
+    topics = a;
+  } else {
+    // 删除全部
+    topics = [];
+  }
+  res.send({
+    success: true,
   });
 }
 
@@ -104,6 +119,39 @@ function pocQuery(req: Request, res: Response) {
   res.send({
     success: true,
     data: jsonObj,
+  });
+}
+
+function indexQuery(req: Request, res: Response) {
+  const indexName = req.query['indexName'];
+  const indexValue = req.query['indexValue'];
+  const jsonObj = [
+    {
+      // k v 名字一样，可以简写，只写k不写v
+      indexName,
+      indexValue: indexValue ?? 'dummy-value',
+    },
+  ];
+
+  for (let i = 0; i < random(5, 50); i++) {
+    jsonObj.push(jsonObj[0]);
+  }
+
+  res.send({
+    success: true,
+    data: jsonObj,
+  });
+}
+
+function createIndex(req: Request, res: Response) {
+  const topicNames: string[] = req.body;
+  topics.forEach((t) => {
+    if (topicNames.includes(t.name)) {
+      t.indexStatus = IndexStatus[1];
+    }
+  });
+  res.send({
+    success: true,
   });
 }
 
@@ -171,7 +219,7 @@ function getJobInstances(req: Request, res: Response) {
 
 ////////////////////////////////////////////////////////
 
-const topics = genTopics(1685);
+let topics = genTopics(1685);
 const jobInstances = genJobInstances(4823);
 const consumerGroups = genConsumerGroups(125);
 
@@ -183,6 +231,10 @@ export default {
   'GET /api/dashboard/idle-jobs': getJobInstances,
 
   'GET /api/kafka/topics': getTopics,
+  'POST /api/kafka/topics': createTopic,
+  'DELETE /api/kafka/topics': deleteTopic,
+
+  'POST /api/kafka/indices': createIndex,
 
   'GET /api/kafka/msg-query/poc': pocQuery,
   'GET /api/kafka/msg-query/index': indexQuery,
