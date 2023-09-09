@@ -107,7 +107,40 @@ function pocQuery(req: Request, res: Response) {
   });
 }
 
-function indexQuery(req: Request, res: Response) {}
+//////////////////////////////////////////////////////// kafka/ConsumerGroup
+function genConsumerGroups(num: number) {
+  const items: ConsumerGroup[] = [];
+  for (let i = 0; i < num; i++) {
+    items.push({
+      name: 'group-' + getRandomString(20),
+      topicPartition: 'topic-' + getRandomString(15) + '-' + random(0, 9),
+      offset: random(1, 1000),
+      lag: random(1, 1000000),
+      updateTime: new Date(),
+    });
+  }
+
+  return items;
+}
+
+function getConsumerGroups(req: Request, res: Response) {
+  const name = req.query['name'] as string;
+  const topicPartition = req.query['topicPartition'] as string;
+  let items = consumerGroups.slice();
+  if (name) {
+    items = items.filter((i) => i.name.toLocaleLowerCase().includes(name.toLocaleLowerCase()));
+  }
+  if (topicPartition) {
+    items = items.filter((i) =>
+      i.topicPartition.toLocaleLowerCase().includes(topicPartition.toLocaleLowerCase()),
+    );
+  }
+
+  res.send({
+    success: true,
+    data: items,
+  });
+}
 
 //////////////////////////////////////////////////////// Job
 function genJobInstances(num: number): JobInstance[] {
@@ -140,11 +173,12 @@ function getJobInstances(req: Request, res: Response) {
 
 const topics = genTopics(1685);
 const jobInstances = genJobInstances(4823);
+const consumerGroups = genConsumerGroups(125);
 
 export default {
   'GET /api/dashboard/kafka-state': getKafkaState,
   'GET /api/dashboard/big-topics': getTopics,
-  'GET /api/dashboard/lag': getLag,
+  'GET /api/dashboard/lag': getConsumerGroups,
   'GET /api/dashboard/failed-jobs': getJobInstances,
   'GET /api/dashboard/idle-jobs': getJobInstances,
 
@@ -152,4 +186,6 @@ export default {
 
   'GET /api/kafka/msg-query/poc': pocQuery,
   'GET /api/kafka/msg-query/index': indexQuery,
+
+  'GET /api/kafka/consumer-groups': getConsumerGroups,
 };

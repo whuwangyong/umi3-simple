@@ -1,92 +1,67 @@
-import React, { useState } from 'react';
-import { Table, Input } from 'antd';
+import React, { useState, useRef } from 'react';
+import { request } from 'umi';
+import {
+  Tooltip,
+  Col,
+  Row,
+  Card,
+  Pagination,
+  Table,
+  Button,
+  Drawer,
+  message,
+  Space,
+  Divider,
+  Input,
+} from 'antd';
+import { GridContent, FooterToolbar } from '@ant-design/pro-layout';
+import {
+  ProForm,
+  ProTable,
+  PageContainer,
+  ModalForm,
+  ProFormText,
+  ProFormTextArea,
+  ProFormDigit,
+  ProColumns,
+  ActionType,
+  ProCard,
+  ProFormSelect,
+} from '@ant-design/pro-components';
+import { ConsumerGroup } from '../data';
+import { getConsumerGroups } from './service';
 
-const YourTableComponent = () => {
-  const [searchText, setSearchText] = useState('');
-  const [searchedColumn, setSearchedColumn] = useState('');
+const columns: ProColumns<ConsumerGroup>[] = [
+  {
+    title: '消费者组名称',
+    dataIndex: 'name',
+  },
+  {
+    title: '消费的主题分区',
+    dataIndex: 'topicPartition',
+  },
+  { title: '消费进度', dataIndex: 'offset', search: false, sorter: (a, b) => a.offset - b.offset },
+  { title: 'lag', dataIndex: 'lag', search: false, sorter: (a, b) => a.lag - b.lag },
+  { title: '更新时间', dataIndex: 'updateTime', valueType: 'dateTime', search: false },
+];
 
-  const data = [
-    { column1: 'wang', column2: '18' },
-    { column1: 'ting', column2: '17' },
-  ];
-
-  const columns = [
-    {
-      title: '列1',
-      dataIndex: 'column1',
-      key: 'column1',
-    },
-    {
-      title: '列2',
-      dataIndex: 'column2',
-      key: 'column2',
-    },
-    // Add more columns as needed
-  ];
-
-  // 定义搜索函数
-  const handleSearch = (selectedKeys, confirm, dataIndex) => {
-    confirm();
-    setSearchText(selectedKeys[0]);
-    setSearchedColumn(dataIndex);
-  };
-
-  // 清除搜索函数
-  const handleReset = (clearFilters) => {
-    clearFilters();
-    setSearchText('');
-  };
-
-  const getColumnSearchProps = (dataIndex) => ({
-    filterDropdown: ({ setSelectedKeys, selectedKeys, confirm, clearFilters }) => (
-      <div style={{ padding: 8 }}>
-        <Input
-          placeholder={`搜索 ${dataIndex}`}
-          value={selectedKeys[0]}
-          onChange={(e) => setSelectedKeys(e.target.value ? [e.target.value] : [])}
-          onPressEnter={() => handleSearch(selectedKeys, confirm, dataIndex)}
-          style={{ width: 188, marginBottom: 8, display: 'block' }}
-        />
-        <button
-          type="button"
-          onClick={() => handleSearch(selectedKeys, confirm, dataIndex)}
-          style={{ width: 90, marginRight: 8 }}
-        >
-          搜索
-        </button>
-        <button onClick={() => handleReset(clearFilters)} style={{ width: 90 }}>
-          重置
-        </button>
-      </div>
-    ),
-    filterIcon: (filtered) => (
-      <i
-        style={{
-          color: filtered ? '#1890ff' : undefined,
-        }}
-      >
-        🔍
-      </i>
-    ),
-    onFilter: (value, record) =>
-      record[dataIndex]
-        ? record[dataIndex].toString().toLowerCase().includes(value.toLowerCase())
-        : '',
-  });
-
-  columns.forEach((col) => {
-    col.title = col.title + getColumnSearchProps(col.dataIndex).filterIcon;
-    col.filterDropdown = getColumnSearchProps(col.dataIndex).filterDropdown;
-    col.onFilter = getColumnSearchProps(col.dataIndex).onFilter;
-  });
-
+const App = () => {
   return (
-    <Table
-      columns={columns}
-      dataSource={data}
-      // 其他Table属性
-    />
+    <GridContent>
+      <ProTable<ConsumerGroup>
+        rowKey="name"
+        columns={columns}
+        search={{
+          labelWidth: 120,
+        }}
+        request={getConsumerGroups}
+        pagination={{ defaultPageSize: 10, pageSizeOptions: [10, 20, 50, 100] }}
+        options={false}
+        revalidateOnFocus={false} // 默认true，切换tab后会自动刷新 https://github.com/ant-design/pro-components/issues/5168
+        form={{ syncToUrl: true, syncToInitialValues: false }}
+      />
+    </GridContent>
   );
 };
 
-export default YourTableComponent;
+export default App;

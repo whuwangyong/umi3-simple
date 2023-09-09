@@ -29,7 +29,9 @@ const consumeOffsetColumns: ColumnsType<ConsumerGroup> = [
   {
     title: '消费者组名称',
     dataIndex: 'name',
-    render: (text: React.ReactNode) => <a href="#">{text}</a>,
+    render: (text: React.ReactNode) => (
+      <Link to={`/kafka/consumer-group?name=${text}`}>{text}</Link>
+    ),
   },
   {
     title: (
