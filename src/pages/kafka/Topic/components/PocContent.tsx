@@ -70,6 +70,7 @@ const PocContent: React.FC<{ topic: string | undefined; partitions: number }> = 
                 width: 120,
               },
               defaultValue: 1,
+              min: 1,
             }}
           />
         </ProForm>

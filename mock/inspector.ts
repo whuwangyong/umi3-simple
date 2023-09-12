@@ -2,7 +2,7 @@ import { Request, Response } from 'express';
 // mock里面要写import from ... './data.d'，否则报错Cannot find module './data' from 'D:/projects/umi3-simple/src/pages/Dashboard'
 // 其他模块里面写from './data' 就行。antd pro 的demo里面也是如此
 import { Topic, IndexStatus, ConsumerGroup } from '../src/pages/kafka/data.d';
-import { JobInstance, JobStatus } from '../src/pages/Job/data.d';
+import { JobInstance, JobStatus, Namespace } from '../src/pages/Job/data.d';
 import { random } from 'lodash';
 import { getRandomString, getRandomDateTime } from '../src/utils/MyUtils';
 // mock 里面不能写'@/utils/MyUtils'，要写相对路径
@@ -26,12 +26,12 @@ function genTopics(num: number): Topic[] {
   const items: Topic[] = [];
   for (let i = 0; i < num; i++) {
     items.push({
-      name: 'topic-' + getRandomString(30),
+      name: 'topic-' + getRandomString(50),
       partitions: [
         { name: 'topicPartition-0', offset: 10 },
         { name: 'topicPartition-1', offset: 20 },
       ],
-      totalOffset: random(1, 10000),
+      totalOffset: random(100000, 100000000),
       indexStatus: IndexStatus[random(0, 2)],
       indices: ['fundAccount', 'bizNo'],
       updateTime: new Date(),
@@ -162,7 +162,7 @@ function genConsumerGroups(num: number) {
     items.push({
       name: 'group-' + getRandomString(20),
       topicPartition: 'topic-' + getRandomString(15) + '-' + random(0, 9),
-      offset: random(1, 1000),
+      offset: random(100000, 10000000),
       lag: random(1, 1000000),
       updateTime: new Date(),
     });
@@ -191,19 +191,22 @@ function getConsumerGroups(req: Request, res: Response) {
 }
 
 //////////////////////////////////////////////////////// Job
+
 function genJobInstances(num: number): JobInstance[] {
   const items: JobInstance[] = [];
   for (let i = 0; i < num; i++) {
     items.push({
-      name: 'jobInstance-' + getRandomString(50),
+      namespace: Namespace[random(0, 4)],
+      name: 'jobInstance-' + getRandomString(75),
       status: JobStatus[random(0, 5)],
       total: random(1, 10),
       startTime: getRandomDateTime('2023-1-1', '2023-12-31'),
       lastUpdateTime: getRandomDateTime('2023-1-1', '2023-12-31'),
-      params: new Map<string, string>([]),
-      endMsgList: [],
-      position: random(1, 1000000),
       idleMin: random(1, 300),
+
+      // params: new Map<string, string>([]),
+      // endMsgList: [],
+      position: random(100000, 10000000),
     });
   }
   return items;

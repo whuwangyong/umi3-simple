@@ -58,7 +58,7 @@ const IndexContent: React.FC<{ topic: string | undefined; indices: string[] | un
           label="选择索引"
           fieldProps={{
             style: {
-              width: 150,
+              width: 'auto',
             },
             defaultValue: 0,
           }}
@@ -69,7 +69,7 @@ const IndexContent: React.FC<{ topic: string | undefined; indices: string[] | un
           label="索引值"
           fieldProps={{
             style: {
-              width: 150,
+              width: 'auto',
             },
           }}
         />

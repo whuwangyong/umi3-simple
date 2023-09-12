@@ -11,6 +11,8 @@ const bigTopicColumns: ColumnsType<Topic> = [
   {
     title: '主题名',
     dataIndex: 'name',
+    ellipsis: true,
+    width: '70%',
     render: (text: React.ReactNode) => <Link to={`/kafka/topic?name=${text}`}>{text}</Link>,
   },
   {
@@ -29,6 +31,8 @@ const consumeOffsetColumns: ColumnsType<ConsumerGroup> = [
   {
     title: '消费者组名称',
     dataIndex: 'name',
+    ellipsis: true,
+    width: '85%',
     render: (text: React.ReactNode) => (
       <Link to={`/kafka/consumer-group?name=${text}`}>{text}</Link>
     ),
@@ -51,7 +55,9 @@ const failedJobInstanceColumns: ColumnsType<JobInstance> = [
   {
     title: '实例名',
     dataIndex: 'name',
-    render: (text: React.ReactNode) => <a href="#">{text}</a>,
+    ellipsis: true,
+    width: '60%',
+    render: (text: React.ReactNode) => <Link to={`/job?name=${text}`}>{text}</Link>,
   },
   {
     title: '消费进度',
@@ -74,7 +80,9 @@ const idleJobInstanceColumns: ColumnsType<JobInstance> = [
   {
     title: '实例名',
     dataIndex: 'name',
-    render: (text: React.ReactNode) => <a href="#">{text}</a>,
+    ellipsis: true,
+    width: '50%',
+    render: (text: React.ReactNode) => <Link to={`/job?name=${text}`}>{text}</Link>,
   },
   {
     title: '消费进度',

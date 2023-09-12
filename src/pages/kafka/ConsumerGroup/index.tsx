@@ -52,7 +52,7 @@ const App = () => {
         rowKey="name"
         columns={columns}
         search={{
-          labelWidth: 120,
+          labelWidth: 'auto',
         }}
         request={getConsumerGroups}
         pagination={{ defaultPageSize: 10, pageSizeOptions: [10, 20, 50, 100] }}

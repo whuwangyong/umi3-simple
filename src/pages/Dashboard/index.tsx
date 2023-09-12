@@ -18,7 +18,7 @@ const leftTableColResponsiveProps = {
   sm: 24,
   md: 24,
   lg: 24,
-  xl: 8,
+  xl: 10,
   style: { marginBottom: 0 },
 };
 const rightTableColResponsiveProps = {
@@ -26,7 +26,7 @@ const rightTableColResponsiveProps = {
   sm: 24,
   md: 24,
   lg: 24,
-  xl: 16,
+  xl: 14,
   style: { marginBottom: 0 },
 };
 
@@ -76,8 +76,8 @@ const Dashboard: React.FC = () => {
             <MyCard
               title="主题/分区"
               extra={
-                <Tooltip placement="bottom" title="查看详情">
-                  <Link to="/welcome">
+                <Tooltip placement="left" title="查看详情">
+                  <Link to="/kafka/topic">
                     <EllipsisOutlined />
                   </Link>
                 </Tooltip>
@@ -90,8 +90,8 @@ const Dashboard: React.FC = () => {
             <MyCard
               title="消费者组"
               extra={
-                <Tooltip placement="bottom" title="查看详情">
-                  <Link to="/welcome">
+                <Tooltip placement="left" title="查看详情">
+                  <Link to="/kafka/consumer-group">
                     <EllipsisOutlined />
                   </Link>
                 </Tooltip>
@@ -104,7 +104,7 @@ const Dashboard: React.FC = () => {
             <MyCard
               title="应用"
               extra={
-                <Tooltip placement="bottom" title="from zookeeper">
+                <Tooltip placement="left" title="数据来源zookeeper">
                   <InfoCircleOutlined />
                 </Tooltip>
               }
@@ -116,8 +116,8 @@ const Dashboard: React.FC = () => {
             <MyCard
               title="作业/实例"
               extra={
-                <Tooltip placement="bottom" title="查看详情">
-                  <Link to="/welcome">
+                <Tooltip placement="left" title="查看详情">
+                  <Link to="/job">
                     <EllipsisOutlined />
                   </Link>
                 </Tooltip>

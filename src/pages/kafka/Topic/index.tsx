@@ -59,9 +59,9 @@ const columns: ProColumns<Topic>[] = [
     dataIndex: 'name',
     // defaultSortOrder: 'ascend',
     sorter: (a, b) => a.name.localeCompare(b.name),
-    filterSearch: true,
-    onFilter: (value, record) =>
-      record.name.toLocaleLowerCase().includes(value.toString().toLowerCase()),
+    // filterSearch: true,
+    // onFilter: (value, record) =>
+    //   record.name.toLocaleLowerCase().includes(value.toString().toLowerCase()),
   },
   {
     title: '分区数',
@@ -114,12 +114,12 @@ const App: React.FC = () => {
   return (
     <GridContent>
       <Row gutter={12}>
-        <Col xs={24} sm={24} md={24} lg={24} xl={10} style={{ marginBottom: 12 }}>
+        <Col xs={24} sm={24} md={24} lg={24} xl={12} style={{ marginBottom: 12 }}>
           <ProTable<Topic>
             rowKey="name"
             columns={columns}
             search={{
-              labelWidth: 80,
+              labelWidth: 'auto',
             }}
             request={getTopics}
             pagination={{ defaultPageSize: 10, pageSizeOptions: [10, 20, 50, 100] }}
@@ -168,6 +168,7 @@ const App: React.FC = () => {
             tableAlertOptionRender={({ onCleanSelected, selectedRowKeys }) => (
               <Space size={'small'}>
                 <Button
+                  type="link"
                   onClick={() => {
                     onCleanSelected();
                   }}
@@ -306,7 +307,7 @@ const App: React.FC = () => {
             </Space>
           </ModalForm>
         </Col>
-        <Col xs={24} sm={24} md={24} lg={24} xl={14}>
+        <Col xs={24} sm={24} md={24} lg={24} xl={12}>
           <ProCard
             title={'消息查询' + (currentRow ? ' - ' + currentRow?.name : '')}
             tabs={{
