@@ -14,6 +14,7 @@ import {
   Space,
   Divider,
   Input,
+  Descriptions,
 } from 'antd';
 import { GridContent, FooterToolbar } from '@ant-design/pro-layout';
 import {
@@ -53,55 +54,8 @@ const handleAdd = async (fields: NewTopic) => {
   }
 };
 
-const columns: ProColumns<Topic>[] = [
-  {
-    title: '主题名称',
-    dataIndex: 'name',
-    // defaultSortOrder: 'ascend',
-    sorter: (a, b) => a.name.localeCompare(b.name),
-    // filterSearch: true,
-    // onFilter: (value, record) =>
-    //   record.name.toLocaleLowerCase().includes(value.toString().toLowerCase()),
-  },
-  {
-    title: '分区数',
-    dataIndex: 'partitions',
-    renderText: (partitions: Partition[]) => partitions.length,
-    search: false,
-  },
-  {
-    title: '总偏移量',
-    dataIndex: 'totalOffset',
-    search: false,
-    // defaultSortOrder: 'descend',
-    sorter: (a, b) => a.totalOffset - b.totalOffset,
-  },
-  {
-    title: '索引状态',
-    dataIndex: 'indexStatus',
-    valueEnum: {
-      none: {
-        text: '无',
-        status: 'Default',
-      },
-      ok: {
-        text: '运行中',
-        status: 'Processing',
-      },
-      error: {
-        text: '异常',
-        status: 'Error',
-      },
-    },
-    search: false,
-    filters: true, // 自动使用 valueEnum 生成
-    onFilter: true, // true，使用ProTable自带的筛选
-  },
-];
-
 const App: React.FC = () => {
   const actionRef = useRef<ActionType>();
-  // 左边栏
   const [createTopicModalVisible, setCreateTopicModalVisible] = useState<boolean>(false);
   const [deleteAllTopicModalVisible, setDeleteAllTopicModalVisible] = useState<boolean>(false);
   const [deleteTopicModalVisible, setDeleteTopicModalVisible] = useState<boolean>(false);
@@ -109,7 +63,60 @@ const App: React.FC = () => {
   const [selectedRows, setSelectedRows] = useState<Topic[]>([]);
   const createTopicModalInitialValues = { partitions: 1, replicas: 1 };
 
-  // 右边栏
+  const [showPartitionsModalVisible, setShowPartitionsModalVisible] = useState<boolean>(false);
+
+  const columns: ProColumns<Topic>[] = [
+    {
+      title: '主题名称',
+      dataIndex: 'name',
+      sorter: (a, b) => a.name.localeCompare(b.name),
+    },
+    {
+      title: '分区数',
+      dataIndex: 'partitions',
+      renderText: (partitions: Partition[], row) => {
+        return (
+          <a
+            onClick={() => {
+              setCurrentRow(row);
+              setShowPartitionsModalVisible(true);
+            }}
+          >
+            {partitions.length}
+          </a>
+        );
+      },
+      search: false,
+    },
+    {
+      title: '总偏移量',
+      dataIndex: 'totalOffset',
+      search: false,
+      // defaultSortOrder: 'descend',
+      sorter: (a, b) => a.totalOffset - b.totalOffset,
+    },
+    {
+      title: '索引状态',
+      dataIndex: 'indexStatus',
+      valueEnum: {
+        none: {
+          text: '无',
+          status: 'Default',
+        },
+        ok: {
+          text: '运行中',
+          status: 'Processing',
+        },
+        error: {
+          text: '异常',
+          status: 'Error',
+        },
+      },
+      search: false,
+      filters: true, // 自动使用 valueEnum 生成
+      onFilter: true, // true，使用ProTable自带的筛选
+    },
+  ];
 
   return (
     <GridContent>
@@ -223,6 +230,7 @@ const App: React.FC = () => {
             }}
             actionRef={actionRef}
           />
+
           <Modal
             title="删除全部主题"
             open={deleteAllTopicModalVisible}
@@ -262,6 +270,27 @@ const App: React.FC = () => {
             okButtonProps={{ danger: true }}
           >
             <p>你确定？</p>
+          </Modal>
+
+          <Modal
+            title="分区详情"
+            open={showPartitionsModalVisible}
+            onCancel={() => {
+              setShowPartitionsModalVisible(false);
+            }}
+          >
+            {currentRow?.partitions.map((partition) => {
+              return (
+                <>
+                  <Descriptions title={partition.name} column={4}>
+                    <Descriptions.Item label="offset">{partition.offset}</Descriptions.Item>
+                    <Descriptions.Item label="leader">{partition.leader}</Descriptions.Item>
+                    <Descriptions.Item label="replicas">{partition.replicas}</Descriptions.Item>
+                    <Descriptions.Item label="isr">{partition.isr}</Descriptions.Item>
+                  </Descriptions>
+                </>
+              );
+            })}
           </Modal>
 
           <ModalForm
