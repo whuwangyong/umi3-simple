@@ -278,17 +278,16 @@ const App: React.FC = () => {
             onCancel={() => {
               setShowPartitionsModalVisible(false);
             }}
+            footer={false}
           >
-            {currentRow?.partitions.map((partition) => {
+            {currentRow?.partitions.map((partition, index) => {
               return (
-                <>
-                  <Descriptions title={partition.name} column={4}>
-                    <Descriptions.Item label="offset">{partition.offset}</Descriptions.Item>
-                    <Descriptions.Item label="leader">{partition.leader}</Descriptions.Item>
-                    <Descriptions.Item label="replicas">{partition.replicas}</Descriptions.Item>
-                    <Descriptions.Item label="isr">{partition.isr}</Descriptions.Item>
-                  </Descriptions>
-                </>
+                <Descriptions title={partition.name} key={index} column={4}>
+                  <Descriptions.Item label="offset">{partition.offset}</Descriptions.Item>
+                  <Descriptions.Item label="leader">{partition.leader}</Descriptions.Item>
+                  <Descriptions.Item label="replicas">{partition.replicas}</Descriptions.Item>
+                  <Descriptions.Item label="isr">{partition.isr}</Descriptions.Item>
+                </Descriptions>
               );
             })}
           </Modal>
