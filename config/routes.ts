@@ -15,6 +15,7 @@ export default [
       },
     ],
   },
+  { path: '/job', name: 'Job', icon: 'smile', component: './Job' },
 
   {
     path: '/user',

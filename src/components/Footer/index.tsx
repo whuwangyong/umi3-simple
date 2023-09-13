@@ -1,4 +1,3 @@
-import { GithubOutlined } from '@ant-design/icons';
 import { DefaultFooter } from '@ant-design/pro-components';
 
 const Footer: React.FC = () => {
@@ -14,7 +13,7 @@ const Footer: React.FC = () => {
         links={[
           {
             key: 'lucky',
-            title: '感谢小女王宝拉，不哭不闹看我编码',
+            title: '感恩小天使王宝拉，不哭不闹伴我编码',
             href: '#',
             blankTarget: false,
           },

@@ -46,3 +46,16 @@ export function getRandomString(length: number) {
   }
   return randomString;
 }
+
+/**
+ * 阻塞一段时间
+ * @param time
+ * @returns
+ */
+export const waitTime = (time: number = 100) => {
+  return new Promise((resolve) => {
+    setTimeout(() => {
+      resolve(true);
+    }, time);
+  });
+};

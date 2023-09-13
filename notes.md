@@ -22,6 +22,28 @@
 
 #### Job
 
+ProTable，列包含：
+
+- 实例名（搜索）
+- 状态（筛选）
+- 总实例数
+- IP（上云后没有了）
+- 启动时间
+- 上次更新时间
+- 闲置分钟（当前时间-上次更新时间）（排序）
+- 操作栏：诊断
+
+多选操作：start、restart、stop、pause、resume、kill
+
+点击诊断后的弹框：
+
+- 运行时参数
+- 消费进度、lag
+- 已处理条数、kafka 去重点
+- 结束流（为什么没结束？上游是否结束？如果能图形化最好）
+- 内存表
+- 日志（上云后给一个超链接到日志平台）
+
 【跳转到 topics、groups、Memtable、ICC、日志】
 
 - [ ] 列表
@@ -66,8 +88,6 @@ group 展示消费者组
 
 【列表形式展示该实例内的内存表，便捷的增删改查】
 
-#### ICC
-
 #### Callback
 
 #### Tools
@@ -76,8 +96,20 @@ group 展示消费者组
 
 - [ ] sharding 计算
 - [ ] ZooKeeper
+- [ ] ICC
+
+### 约定
+
+- 一个表单下的一组按钮，最多一个是 primary type（antd 官方推荐）
+- 只有 danger 级别的按钮点击后会弹框二次确认，其他按钮点击后直接提交
+- ProTable 的 name 是唯一主键，react 使用该字段作为 key
+- 主键放在 ProTable 的第一列
 
 ### 后台定时任务
+
+一种方案是客户端每次请求就返回新的结果，这个一是太慢，二是并发太低；另一种方案是定时任务进行更新，客户端请求的是提前准备好的结果。这肯定有一定的延迟。因此要提供定点更新的接口，满足客户端获取某一个资源（topic、消费组等）的准确信息。
+
+不同定时任务有不同的时间间隔，而且还有数据上的依赖，注意编排。比如 listTopic，这是相对快的操作，间隔可以短。获取每个 topic 分区的 lso，这可能慢一些。两个线程都是写 topic 表，要注意锁。
 
 - 获取所有 topics， /120s
 - 获取所有 groups，/120s
@@ -88,9 +120,52 @@ ComposedFuture
 
 ### 需要使用数据库
 
+【更新】暂时不用 DB 了。因为最需要持久化的索引，量太大，DB 可能有影响。其他的 topic、消费组等信息本来就是实时性很强的数据，量也不大，就放在内存了。
+
 - 消息索引大范围使用后，如果索引数据全在内存，一重启就丢失了，会是巨大的损失，因此需要持久化
 - 后期如果做用户，也需要 DB
 - 一些统计指标需要借助 DB 实现，比如记录某 topic 最近一个月的消息数量变化；记录某作业每天的完成时间
+- 主题、消费组这些是变化的，需要持久化到 DB 吗？需要。kafka 的 api，调用一次返回的是一个集合，如何根据这个集合更新 DB？新增的可以 insert，DB 里有的可以 update，集合里没有的说明已经删除了，db 要保留这条记录吗？~~分情况，topic 不保留，消费组保留，但是要改一下 online 状态为 false，因为消费组在消费者关闭后就没有了，因此需要保留。~~ 不保留，尽量与 kafka 状态一致。
+
+建表：
+
+#### topic
+
+- id
+- name
+- partition
+- lso, log stable offset
+- leo, log end offset
+- update_time
+
+u_idx:(name,partition)
+
+如何获取大主题：group by(name) sum(lso)
+
+#### consumer-group
+
+- id
+- name
+- topic
+- partition
+- offset 消费进度
+- state
+- members: client_id[]
+- update_time
+
+lag：根据 topic 和 partition 查 topic 表，获取 lso，减 offset
+
+#### index
+
+这个量很大，要写入 DB 吗？上亿级别的消息，DB 可能吃不消。
+
+- id
+- name
+- value
+- topic
+- partition
+- offset
+- ...
 
 ### 查询和分页
 
@@ -106,6 +181,10 @@ ComposedFuture
 - 前端是在 search 的结果上折腾
 - 进页面，后端给全量数据
 - 前端刷新可以再次拿到全量数据
+
+一个缺陷： search 走后端，筛选在前端（表头），那么查询表单上的重置按钮，不会对表头上的筛选条件进行重置。研究了下暂未解决，因此，Job 页面的查询分页过滤等都在后端进行。
+
+但是前端自带的筛选也有个优势：可以多选。
 
 ## antd
 

@@ -2,17 +2,19 @@
  * 作业实例
  */
 export interface JobInstance {
+  namespace: string;
   name: string;
   status: string;
   total: number;
+  ip?: string;
   startTime: Date;
   lastUpdateTime: Date;
-  params: Map<string, string>;
-  endMsgList: EndMessage[];
+  idleMin: number; // 闲置分钟
 
+  // params: Map<string, string>;
+  // endMsgList: EndMessage[];
   position?: number;
-  idleMin?: number; // 闲置分钟
-  lag?: number;
+  // lag?: number;
 }
 
 /**
@@ -32,4 +34,12 @@ export enum JobStatus {
   PAUSED,
   STOPPED,
   NONE,
+}
+
+export enum Namespace {
+  NSSP,
+  NSOP,
+  NSHK,
+  NSHG,
+  NSBH,
 }

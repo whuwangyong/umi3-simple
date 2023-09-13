@@ -4,7 +4,7 @@ import { Request, Response } from 'express';
 import { Topic, IndexStatus, ConsumerGroup } from '../src/pages/kafka/data.d';
 import { JobInstance, JobStatus, Namespace } from '../src/pages/Job/data.d';
 import { random } from 'lodash';
-import { getRandomString, getRandomDateTime } from '../src/utils/MyUtils';
+import { getRandomString, getRandomDateTime, waitTime } from '../src/utils/MyUtils';
 // mock 里面不能写'@/utils/MyUtils'，要写相对路径
 import { parse } from 'url';
 
@@ -213,10 +213,77 @@ function genJobInstances(num: number): JobInstance[] {
 }
 
 function getJobInstances(req: Request, res: Response) {
+  const namespace = req.query['namespace'] as string;
+  const name = req.query['name'] as string;
+  const status = req.query['status'] as string;
   let items = jobInstances.slice();
+
+  if (namespace) {
+    items = items.filter((i) => i.namespace === namespace);
+  }
+  if (name) {
+    items = items.filter((i) => i.name.toLocaleLowerCase().includes(name.toLocaleLowerCase()));
+  }
+  if (status) {
+    items = items.filter((i) => i.status === status);
+  }
+
   res.send({
     success: true,
     data: items,
+  });
+}
+
+async function diagnose(req: Request, res: Response) {
+  const jobInstance = req.query['jobInstance'];
+  await waitTime(1000);
+  res.send({
+    success: true,
+    data: {
+      params: {
+        name: jobInstance,
+        'input-topic': 'aaa',
+        'output-topic': 'bbb',
+        'batch-size': 1000,
+      },
+      progress: {
+        消费进度: 123234,
+        已处理条数: 123414,
+        kafka去重点: 12234,
+      },
+      end: {},
+      memtable: {},
+      log: `let nameSiteMapping = new Map();
+      // 设置 Map 对象
+      nameSiteMapping.set("Google", 1);
+      nameSiteMapping.set("Runoob", 2);
+      nameSiteMapping.set("Taobao", 3);
+      // 获取键对应的值
+      console.log(nameSiteMapping.get("Runoob")); //40
+      // 判断 Map 中是否包含键对应的值
+      console.log(nameSiteMapping.has("Taobao")); //true
+      console.log(nameSiteMapping.has("Zhihu")); //false
+      // 返回 Map 对象键/值对的数量
+      console.log(nameSiteMapping.size); //3
+      // 删除 Runoob
+      console.log(nameSiteMapping.delete("Runoob")); // true
+      console.log(nameSiteMapping);
+      // 移除 Map 对象的所有键/值对
+      nameSiteMapping.clear(); //清除 Map
+      console.log(nameSiteMapping);`,
+    },
+  });
+}
+
+function sendIcc(req: Request, res: Response) {
+  const operation: string = req.body['operation'] as string;
+  const jobInstances: JobInstance[] = req.body['jobInstances'] as [];
+  res.send({
+    success: true,
+    data: {
+      operation,
+      jobInstances,
+    },
   });
 }
 
@@ -243,4 +310,8 @@ export default {
   'GET /api/kafka/msg-query/index': indexQuery,
 
   'GET /api/kafka/consumer-groups': getConsumerGroups,
+
+  'GET /api/jobs': getJobInstances,
+  'GET /api/jobs/diagnose': diagnose,
+  'POST /api/icc': sendIcc,
 };
