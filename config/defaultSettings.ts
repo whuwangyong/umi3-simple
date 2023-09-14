@@ -12,7 +12,7 @@ const Settings: LayoutSettings & {
   //
   layout: 'side',
   contentWidth: 'Fluid',
-  fixedHeader: false,
+  headerRender: false,
   fixSiderbar: true,
   colorWeak: false,
   title: 'Inspector',
