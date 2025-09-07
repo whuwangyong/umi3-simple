@@ -31,8 +31,16 @@ Scripts provided in `package.json`. It's safe to modify or add additional script
 
 ### Start project
 
+使用 mock 数据启动
+
 ```bash
 npm start
+```
+
+不使用 mock
+
+```bash
+npm run dev
 ```
 
 ### Build project
