@@ -16,6 +16,12 @@ const JsonViewer = ({
   maxHeight?: string;
 }) => {
   const [collapse, setCollapse] = useState<number>(2);
+  const [data, setData] = useState(jsonObj);
+
+  // react-json-view 编辑回调
+  const handleChange = (edit) => {
+    setData(edit.updated_src);
+  };
 
   return (
     <>
@@ -42,10 +48,13 @@ const JsonViewer = ({
         theme="monokai"
         iconStyle="square"
         name={false}
-        enableClipboard={false}
+        enableClipboard={true}
         indentWidth={2}
         collapsed={collapse}
-        displayDataTypes={false}
+        displayDataTypes={true}
+        onEdit={handleChange}
+        onAdd={handleChange}
+        onDelete={handleChange}
       />
     </>
   );
